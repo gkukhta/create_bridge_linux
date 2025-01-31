@@ -19,28 +19,36 @@ nmcli con del "Connection 2"
 ```
 Добавляем мост:
 ```bash
-nmcli connection add type bridge ifname br1
+nmcli connection add type bridge ifname br0
 ```
 ```
-Подключение «bridge-br1» (63db8daf-6661-4d17-8b59-e9d804a04933) успешно добавлено.
+Подключение «bridge-br0» (63db8daf-6661-4d17-8b59-e9d804a04933) успешно добавлено.
 ```
 Подключаем физический интерфейс к мосту:
 ```bash
-nmcli connection add type ethernet ifname enp2s0 master br1
+nmcli connection add type ethernet ifname enp2s0 master br0
 ```
 При необходимости настраиваем автоматическую настройку по DHCP:
 ```bash
-nmcli connection modify bridge-br1 ipv4.method auto
+nmcli connection modify bridge-br0 ipv4.method auto
 ```
 При необходимости клонируем MAC адрес физического интерфейса:
 ```bash
-nmcli connection modify bridge-br1 ethernet.cloned-mac-address 00:e0:52:94:00:48
+nmcli connection modify bridge-br0 ethernet.cloned-mac-address 00:e0:52:94:00:48
 ```
 При необходимости добавляем маршруты:
 ```bash
-nmcli connection modify bridge-br1 +ipv4.routes "192.168.0.0/16 192.168.0.1 40"
+nmcli connection modify bridge-br0 +ipv4.routes "192.168.0.0/16 192.168.0.1 40"
 ```
-Включаем интерфейс bridge-br1:
+Включаем интерфейс bridge-br0:
 ```bash
-nmcli connection up bridge-br1
+nmcli connection up bridge-br0
+```
+Если надо, то добавьте серверы DNS:
+```bash
+nmcli connection modify "bridge-br0" ipv4.dns "8.8.8.8 1.1.1.1"
+```
+Отключить автоматическое назначение серверов DNS:
+```bash
+nmcli connection modify "bridge-br0" ipv4.ignore-auto-dns yes
 ```
